@@ -101,6 +101,7 @@ namespace SmartReverseDnsPlugIn
 
         private void txtVal_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
+            if (e.KeyChar >= '0' && e.KeyChar <= '9') return;
             switch (e.KeyChar)
             {
                 case 's':
@@ -119,9 +120,6 @@ namespace SmartReverseDnsPlugIn
                 case 'D':
                     comExt.SelectedIndex = 3;
                     break;
-                case '0': // TODO: to '9'
-                    return;
-
                 default:
                     if (e.KeyChar < 32 | e.KeyChar == 127)
                         return;
