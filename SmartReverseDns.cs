@@ -20,7 +20,7 @@ namespace SmartReverseDnsPlugIn
             var rv = new IPlugInBase.PlugInTypeInfo();
             rv.Name = "Smart Reverse DNS";
             rv.Description = "Synthesizes reverse DNS records";
-            rv.InfoURL = "";
+            rv.InfoURL = "http://www.simpledns.com/plugin-smartreversedns";
             rv.ConfigFile = false;
             rv.MultiThreaded = false;
             return rv;
@@ -57,12 +57,10 @@ namespace SmartReverseDnsPlugIn
             if(Cfg.HostReq) {
                 rv.Domain = null;
                 rv.RRTypes=new DNSRRType[2];
-                rv.RRTypes[0] = RecTypePTR;
                 rv.RRTypes[1] = CfgIPv6 ? RecTypeAAAA : RecTypeA;
             } else {
-                rv.Domain = PtrMatchSuffix;
+                rv.Domain = JHSoftware.SimpleDNS.Plugin.DomainName.Parse("*." + PtrMatchSuffix.ToString());
                 rv.RRTypes = new DNSRRType[1];
-                rv.RRTypes[0] = RecTypePTR;
             }
             rv.RRTypes[0] = RecTypePTR;
             return rv;
@@ -138,22 +136,21 @@ namespace SmartReverseDnsPlugIn
 
         private DNSAnswer LookupPTR6(IDNSRequest request)
         {
-            var x = request.QName.ToString();
-            x = x.Substring(0, x.Length - 9); // strip .ip6.arpa
-            if (x.Length != 63) return null;
+            var x = request.QName.ToString().ToLower();
+            x = x.Substring(0, x.Length - 8); // strip ip6.arpa
+            if (x.Length != 64) return null;
             var ipb = new byte[16];
             int p=0;
             int h1, h2;
             for (var i = 60; i >=0; i-=4)
             {
                 if (x[i + 1] != '.') return null;
-                if (i < 60 && x[i + 3] != '.') return null;
+                if (x[i + 3] != '.') return null;
                 h1=HexCharValue(x[i]);
                 if( h1<0 ) return null;
                 h2=HexCharValue(x[i+2]);
                 if( h2<0 ) return null;
-                ipb[p]=(byte) (h1+(h2<<4));
-                p++;
+                ipb[p++]=(byte) (h1+(h2<<4));
             }
             return MakeAnswer(request, MakeHostStr(ipb) + ".");
         }
@@ -161,9 +158,9 @@ namespace SmartReverseDnsPlugIn
         private int HexCharValue(char c)
         {
             if (c < '0') return -1;
-            if (c <= '9') return c - 48;
+            if (c <= '9') return c - 48; // ascii for '0' = 48
             if (c < 'a') return -1;
-            if (c <= 'f') return c - 55;
+            if (c <= 'f') return c - 87; // ascii for 'a' = 97 
             return -1;
         }
 

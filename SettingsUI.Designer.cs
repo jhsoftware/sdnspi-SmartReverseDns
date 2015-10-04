@@ -134,6 +134,8 @@
             // chkHostReq
             // 
             this.chkHostReq.AutoSize = true;
+            this.chkHostReq.Checked = true;
+            this.chkHostReq.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkHostReq.Location = new System.Drawing.Point(0, 167);
             this.chkHostReq.Name = "chkHostReq";
             this.chkHostReq.Size = new System.Drawing.Size(301, 17);
