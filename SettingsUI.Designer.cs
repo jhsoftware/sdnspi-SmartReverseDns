@@ -40,7 +40,7 @@
             this.chkHostReq = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.ctlTTL1 = new SmartReverseDnsPlugIn.ctlTTL();
+            this.ctlTTL1 = new JHSoftware.SimpleDNS.ctlTTL();
             this.ddIP = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -259,7 +259,7 @@
         private System.Windows.Forms.CheckBox chkHostReq;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label9;
-        private ctlTTL ctlTTL1;
+        private JHSoftware.SimpleDNS.ctlTTL ctlTTL1;
         private System.Windows.Forms.ComboBox ddIP;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label8;
