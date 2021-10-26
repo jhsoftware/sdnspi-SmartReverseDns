@@ -16,12 +16,12 @@ namespace SmartReverseDnsPlugIn
         IHost _Host;
         IHost IPlugInBase.Host { get => _Host; set => _Host=value; }
 
-        public IPlugInBase.PlugInTypeInfo GetPlugInTypeInfo()
+        public IPlugInBase.PlugInTypeInfo GetTypeInfo()
         {
             var rv = new IPlugInBase.PlugInTypeInfo();
             rv.Name = "Smart Reverse DNS";
             rv.Description = "Synthesizes reverse DNS records";
-            rv.InfoURL = "https://simpledns.plus/kb/187/smart-reverse-dns-plug-in";
+            rv.InfoURL = "https://simpledns.plus/plugin-smartreversedns";
             return rv;
         }
 
@@ -45,11 +45,11 @@ namespace SmartReverseDnsPlugIn
             }
         }
 
-        public System.Threading.Tasks.Task<LookupResult<SdnsIP>> LookupHost(DomName name, bool ipv6, IDNSRequest req)
+        public System.Threading.Tasks.Task<LookupResult<SdnsIP>> LookupHost(DomName name, bool ipv6, IRequestContext req)
         {
             return System.Threading.Tasks.Task.FromResult(LookupHost2(name, ipv6, req));
         }
-        private LookupResult<SdnsIP> LookupHost2(DomName name, bool ipv6, IDNSRequest req)
+        private LookupResult<SdnsIP> LookupHost2(DomName name, bool ipv6, IRequestContext req)
         {
             if (!Cfg.HostReq) return null;
             if (FirstIP.IsIPv6() != ipv6) return null;
@@ -83,11 +83,11 @@ namespace SmartReverseDnsPlugIn
             return new LookupResult<SdnsIP> { Value = resultIP, TTL = Cfg.TTL };
         }
 
-        public System.Threading.Tasks.Task<LookupResult<DomName>> LookupReverse(SdnsIP ip, IDNSRequest req)
+        public System.Threading.Tasks.Task<LookupResult<DomName>> LookupReverse(SdnsIP ip, IRequestContext req)
         {
             return System.Threading.Tasks.Task.FromResult(LookupReverse2(ip, req));
         }
-        private LookupResult<DomName> LookupReverse2(SdnsIP ip, IDNSRequest req)
+        private LookupResult<DomName> LookupReverse2(SdnsIP ip, IRequestContext req)
         {
             if (FirstIP.IsIPv6() != ip.IsIPv6()) return null;
             if (FirstIP.MaskFirst(Cfg.Subnet) != ip.MaskFirst(Cfg.Subnet)) return null;
