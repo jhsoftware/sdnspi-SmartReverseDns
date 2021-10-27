@@ -16,9 +16,9 @@ namespace SmartReverseDnsPlugIn
         IHost _Host;
         IHost IPlugInBase.Host { get => _Host; set => _Host=value; }
 
-        public IPlugInBase.PlugInTypeInfo GetTypeInfo()
+        public TypeInfo GetTypeInfo()
         {
-            var rv = new IPlugInBase.PlugInTypeInfo();
+            var rv = new TypeInfo();
             rv.Name = "Smart Reverse DNS";
             rv.Description = "Synthesizes reverse DNS records";
             rv.InfoURL = "https://simpledns.plus/plugin-smartreversedns";
@@ -138,16 +138,6 @@ namespace SmartReverseDnsPlugIn
         public bool InstanceConflict(string config1, string config2, ref string errorMsg)
         {
             return false;
-        }
-
-        public void LoadState(string state)
-        {
-            return;
-        }
-
-        public string SaveState()
-        {
-            return null;
         }
 
         public System.Threading.Tasks.Task StartService()
