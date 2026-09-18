@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using JHSoftware.SimpleDNS;
 
 namespace SmartReverseDnsPlugIn
 {
@@ -24,7 +25,7 @@ namespace SmartReverseDnsPlugIn
             if (string.IsNullOrEmpty(config)) return;
             var cfg = SrdConfig.DeSerialize(config);
             txtIP.Text = cfg.FirstIP;
-            ddSubnet.SelectedIndex =IPv6 ? (124 - cfg.Subnet) / 4 : (24 - cfg.Subnet) / 8;
+            ddSubnet.SelectedIndex =IPv6 ? (124 - cfg.Subnet) / 4 : 31 - cfg.Subnet;
             txtPrefix.Text = cfg.Prefix;
             ddIP.SelectedIndex= cfg.FullIP ? 0 : 1;
             txtSuffix.Text = cfg.Suffix;
@@ -36,7 +37,7 @@ namespace SmartReverseDnsPlugIn
         {
             var rv = new SrdConfig();
             rv.FirstIP = txtIP.Text.Trim();
-            rv.Subnet = IPv6 ? 124 - 4 * ddSubnet.SelectedIndex : 24 - 8 * ddSubnet.SelectedIndex;
+            rv.Subnet = IPv6 ? 124 - 4 * ddSubnet.SelectedIndex : 31 - ddSubnet.SelectedIndex;
             rv.Prefix = txtPrefix.Text.Trim().ToLower();
             rv.FullIP = ddIP.SelectedIndex==0;
             rv.Suffix = txtSuffix.Text.Trim().ToLower();
@@ -45,21 +46,23 @@ namespace SmartReverseDnsPlugIn
             return rv.Serialize();
         }
 
+        private int SubNetIPVer = 0;
+        private SdnsIPv4 Ip4Full= (SdnsIPv4)SdnsIP.FromBytes(new Byte[] {255, 255, 255, 255});
         private void FillSubNetDD()
         {
             if(IPv6)
             {
-                if (ddSubnet.Items.Count > 3) return;
+                if (SubNetIPVer == 6) return;
+                SubNetIPVer = 6;
                 ddSubnet.Items.Clear();
                 for (var i = 124; i > 0; i -= 4) ddSubnet.Items.Add(i.ToString());
             }
             else
             {
-                if (ddSubnet.Items.Count == 3) return;
+                if (SubNetIPVer == 4) return;
+                SubNetIPVer = 4;
                 ddSubnet.Items.Clear();
-                ddSubnet.Items.Add("24  (255.255.255.0)");
-                ddSubnet.Items.Add("16  (255.255.0.0)");
-                ddSubnet.Items.Add("8  (255.0.0.0)");
+                for (var i = 31; i > 0; i -= 1) ddSubnet.Items.Add(i.ToString() + "  (" + Ip4Full.MaskFirst(i) +")");
             }
             ddSubnet.SelectedIndex = 0;
         }

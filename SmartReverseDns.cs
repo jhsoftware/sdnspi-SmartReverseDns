@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using JHSoftware.SimpleDNS.Plugin;
@@ -115,9 +115,9 @@ namespace SmartReverseDnsPlugIn
             else
             {   //IPv4
                 x = ipb[3].ToString();
-                if (sn <= 16) x = ipb[2].ToString() + "-" + x;
-                if (sn <= 8) x = ipb[1].ToString() + "-" + x;
-                if (sn == 0) x = ipb[0].ToString() + "-" + x;
+                if (sn < 24) x = ipb[2].ToString() + "-" + x;
+                if (sn < 16) x = ipb[1].ToString() + "-" + x;
+                if (sn < 8) x = ipb[0].ToString() + "-" + x;
             }
             return new LookupResult<DomName> { Value = DomName.Parse(Cfg.Prefix + x + Cfg.Suffix), TTL = Cfg.TTL };
         }
